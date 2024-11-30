@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI.Interface;
 using WebAPI.Model;
-using System.Collections.Generic;
 
 namespace WebAPI.API.Controllers
 {
@@ -16,58 +16,26 @@ namespace WebAPI.API.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Usuario>> GetAll()
+        [HttpPost("Registro")]
+        public async Task<IActionResult> Register([FromBody] UsuarioDto usuario)
         {
-            var usuarios = _usuarioService.GetAll();
-            if (usuarios == null || usuarios.Count == 0)
+            var user = new UsuarioEntities
             {
-                return NotFound();
+                Username = usuario.Username,
+                Rol = "User"
+            };
+
+            try
+            {
+                await _usuarioService.Registrar(user, usuario.Password);
+                return Ok();
             }
-            return Ok(usuarios);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Usuario> GetById(int id)
-        {
-            var usuario = _usuarioService.GetById(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-            return Ok(usuario);
-        }
 
-        [HttpPost]
-        public ActionResult<Usuario> Add(Usuario usuario)
-        {
-            var createdUsuario = _usuarioService.Add(usuario);
-            return CreatedAtAction(nameof(GetById), new { id = createdUsuario.UsuarioId }, createdUsuario);
-        }
-
-        [HttpPut("{id}")]
-        public ActionResult Update(int id, Usuario usuario)
-        {
-            var existingUsuario = _usuarioService.GetById(id);
-            if (existingUsuario == null)
-            {
-                return NotFound();
-            }
-            usuario.UsuarioId = id;
-            _usuarioService.Update(usuario);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            var existingUsuario = _usuarioService.GetById(id);
-            if (existingUsuario == null)
-            {
-                return NotFound();
-            }
-            _usuarioService.Delete(id);
-            return NoContent();
-        }
     }
 }

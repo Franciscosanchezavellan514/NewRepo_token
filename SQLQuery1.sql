@@ -11,20 +11,20 @@ create table CatDispositivo(
 )
 go
 
+CREATE TABLE CatUsuario (
+    UsuarioId INT PRIMARY KEY IDENTITY,
+    UsuarioUsername VARCHAR(20) NOT NULL,
+    UsuarioPassword VARCHAR(60) NOT NULL,
+    UsuarioRol VARCHAR(30) NOT NULL,
+    UsuarioSalt VARBINARY(64),
+);
+
 CREATE TABLE Roles (
     RolId INT PRIMARY KEY IDENTITY(1,1),
     Nombre VARCHAR(50) NOT NULL
 );
 GO
 
-CREATE TABLE Usuario (
-    UsuarioId INT PRIMARY KEY IDENTITY(1,1),
-    Nombre VARCHAR(50) NOT NULL,
-    Correo VARCHAR(100) NOT NULL,
-    RolId INT,
-    FOREIGN KEY (RolId) REFERENCES Roles(RolId)
-);
-GO
 
 CREATE TABLE Producto (
     ProductoId INT PRIMARY KEY IDENTITY(1,1),
