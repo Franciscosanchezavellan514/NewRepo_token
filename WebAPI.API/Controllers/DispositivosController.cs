@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace WebAPI.API.Controllers
 {
+     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DispositivosController : ControllerBase
